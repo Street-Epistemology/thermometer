@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>body{overflow: hidden;}</style>
+</head>
+<body>
+<img src="scale.svg" id="img">
+<script>
+function refresh(node){
+   var times = 2000; // gap in Milli Seconds;
+
+   (function startRefresh(){
+      var address;
+      if(node.src.indexOf('?')>-1)
+       address = node.src.split('?')[0];
+      else 
+       address = node.src;
+      node.src = address+"?time="+new Date().getTime();
+
+      setTimeout(startRefresh,times);
+   })();
+}
+
+window.onload = function(){
+  var node = document.getElementById('img');
+  refresh(node);
+}
+</script>
+</body>
+</html>
