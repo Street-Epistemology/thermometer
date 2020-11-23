@@ -4,7 +4,9 @@ Bot for the Street Epistemology Discord live shows.
 # Features
 
 These features only work within the _🔴live-show-text_ channel.
+
 To _use_ there commands below means to type them 
+
 All commands are case-insensitive (can be either lower or uppercase) for the first letter. This was implemented to accommodate for many smartphones autocapitalising the first letter.
 
 Note: Content between < > is just a placeholder.
@@ -19,9 +21,13 @@ Anyone on the server can write claims and questions to be shown on screen by pre
 
 
 This text is only shown uppon approval by someone with the _Live Show Host_ role by way of reacting via checkmark.
+
 The checkmark reaction (when used by the audience) only shows approval but has no other effect.
+
 The triangle-warning reaction is used to denote a need for spell-checking or rephrasing.
+
 The circular-ban reaction is used to mark the message as innapropriate for for use in SE.
+
 The floppy disk reaction is only for production team. Work in progress (goal, save messages to output as lista later)
 
 ## Production team features
@@ -41,18 +47,23 @@ Changes the on-screen name of the guest side. Using only `guest` makes said text
 
 ### `unmute <@user>` removes the channel mute imposed by the _🔴Live Show_ channel permissions
 Multiple user mentions supported. Example `unmute @user1 @user2 @user3`
+
 Note: using `unmute` alone removes the channel mute from everyone. Use with caution.  
 
 ### `mute <@user>` reinsates the channel mute imposed by the _🔴Live Show_ channel permissions (if applicable)
 Does not affect user that have roles with speak permission on this voice channel.
+
 Multiple user mentions supported. Example `mute @user1 @user2 @user3`
+
 Note: using `nmute` alone reinsates the channel mute from everyone. Use with caution.  
 
 
 ### `guest <@user>` enables user to speak and show video (make them our guest).
 
 Unmutes and provides video permission via giving the _Live Show Guest_ role.
+
 Revert individually with `unguest` or use `unclench` to remove role server-wide.
+
 Multiple user mentions supported. Example `guest @user1 @user2 @user3`
 
 ### `unguest <@user>` removes the role given above and resets room permission for mentioned user(s).
@@ -60,6 +71,7 @@ Multiple user mentions supported. Example `unguest @user1 @user2 @user3`
 
 ### `unclench` Remove the role given above.
 Removes the _Live Show Guest_ role server-wide.
+
 No user mention supported, use `unguest` for that.
 
 ## Advanced
