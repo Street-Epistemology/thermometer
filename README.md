@@ -77,3 +77,5 @@ No user mention supported, use `unguest` for that.
 *work in progress
 ### `showtime` sends the user a link for OBS remote control, to allow that user to control the stream (select Scenes, toggle Sources, ...) .
 Only available if bot running from local streaming machine.
+
+Thank you www.openode.io for generously hosting this project of ours!
