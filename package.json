@@ -4,6 +4,7 @@
   "description": "Bot for the Street Epistemology Discord live shows.",
   "main": "thermometer.js",
   "scripts": {
+    "start": "node thermometer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
