@@ -405,7 +405,7 @@ console.log(process.env)
 
 console.log('DISCORD_TOKEN')
 
-console.log('"',process.env.DISCORD_TOKEN,'"')
+console.log('"'+process.env.DISCORD_TOKEN+'"')
 
 
 
