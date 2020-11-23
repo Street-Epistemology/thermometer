@@ -398,17 +398,7 @@ if (!process.env.DISCORD_TOKEN) {
   let rawdata = fs.readFileSync('token.json');
   process.env.DISCORD_TOKEN = JSON.parse(rawdata).DISCORD_TOKEN;
 }
-console.log('pre-login')
-console.log('env')
 
-console.log(process.env)
-
-console.log('DISCORD_TOKEN')
-
-console.log('"'+process.env.DISCORD_TOKEN+'"')
-
-
-
-client.login(process.env.DISCORD_TOKEN).catch(err => {
+client.login(process.env.DISCORD_TOKEN.trim()).catch(err => {
   console.log('Login failed!')
 });
