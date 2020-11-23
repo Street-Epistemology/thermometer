@@ -13,7 +13,7 @@ Note: Content between < > is just a placeholder.
 
 ## Public features
 
-### `-` handles show claims and questions
+### `-<text>` handles show claims and questions
 
 Anyone on the server can write claims and questions to be shown on screen by preceeding them with a dash/minus (only work). Editing the message to add the dass/minus after posting does not currently work. Claims/questions that included a dash/minus on first post can be edited for spellcheck and rewording.
 
