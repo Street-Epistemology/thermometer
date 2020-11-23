@@ -399,6 +399,16 @@ if (!process.env.DISCORD_TOKEN) {
   process.env.DISCORD_TOKEN = JSON.parse(rawdata).DISCORD_TOKEN;
 }
 console.log('pre-login')
+console.log('env')
+
+console.log(process.env)
+
+console.log('DISCORD_TOKEN')
+
+console.log('"',process.env.DISCORD_TOKEN,'"')
+
+
+
 client.login(process.env.DISCORD_TOKEN).catch(err => {
-  throw new Error(process.env);
+  console.log('Login failed!')
 });
