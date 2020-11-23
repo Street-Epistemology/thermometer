@@ -20,14 +20,10 @@ Anyone on the server can write claims and questions to be shown on screen by pre
 ![Screenshot of claim/quetions handling and screen result](https://raw.githubusercontent.com/Street-Epistemology/thermometer/readme-images/claimbot.jpg?raw=true)
 
 
-This text is only shown uppon approval by someone with the _Live Show Host_ role by way of reacting via checkmark.
-
-The checkmark reaction (when used by the audience) only shows approval but has no other effect.
-
-The triangle-warning reaction is used to denote a need for spell-checking or rephrasing.
-
-The circular-ban reaction is used to mark the message as innapropriate for for use in SE.
-
+This text is only shown uppon approval by someone with the _Live Show Host_ role by way of reacting via checkmark.\
+The checkmark reaction (when used by the audience) only shows approval but has no other effect.\
+The triangle-warning reaction is used to denote a need for spell-checking or rephrasing.\
+The circular-ban reaction is used to mark the message as innapropriate for for use in SE.\
 The floppy disk reaction is only for production team. Work in progress (goal, save messages to output as lista later)
 
 ## Production team features
@@ -70,8 +66,7 @@ Multiple user mentions supported. Example `guest @user1 @user2 @user3`
 Multiple user mentions supported. Example `unguest @user1 @user2 @user3`
 
 ### `unclench` Remove the role given above.
-Removes the _Live Show Guest_ role server-wide.
-
+Removes the _Live Show Guest_ role server-wide.\
 No user mention supported, use `unguest` for that.
 
 ## Advanced
