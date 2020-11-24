@@ -5,12 +5,8 @@ const Discord = require('discord.js');
 client = new Discord.Client();
 const fs = require('fs');
 
-const vip = [
-  "flash307887709706256385"//flash
-  ,"563797322798989330"//FK
+const vip = ["563797322798989330"//FK
   ,"658378708893302784"//Dali
-  ,"727667474488623235"//DaNaia
-  ,"728725797409652767"//Devon
   ,"726857147773616269"//Shoulder
 ]
 
@@ -19,11 +15,8 @@ var eapprove = '✅', ewarn = '⚠️', enot = '🚫', enext = '⏭️', esave =
 
 var scale = fs.readFileSync('thermometer.svg', 'utf8');
 serverID=null;
-var memr;
-var partr;
+var memr, partr, vtxt;
 vc=null;
-var vtxt;
-mroom = null;
 questions = [];
 client.on('ready', () => {
   console.log(`Thermometer logged in as ${client.user.tag}!                                                                           
@@ -36,7 +29,7 @@ client.on('ready', () => {
              _____ _                               _              _       _               
             |_   _| |_ ___ ___ _____ ___ _____ ___| |_ ___ ___   | |_ ___| |_             
               | | |   | -_|  _|     | . |     | -_|  _| -_|  _|  | . | . |  _|            
-              |_| |_|_|___|_| |_|_|_|___|_|_|_|___|_| |___|_|    |___|___|_|    v1.9          
+              |_| |_|_|___|_| |_|_|_|___|_|_|_|___|_| |___|_|    |___|___|_|    v1.10          
                                                                                           
                                                                                           
                                          _          _____ _____                           
@@ -45,8 +38,7 @@ client.on('ready', () => {
                                         |___|_  |  |__|  |__|__|                          
                                             |___|                                         
   `);
-  // SE server: 226539067557412864
-  // collab server: 671632183101751296
+  // SE server: 226539067557412864  collab server: 671632183101751296
   serverID = client.guilds.cache.get('226539067557412864');
 
   // Live show participant / veteran / trsuted speaker role
@@ -63,16 +55,13 @@ client.on('ready', () => {
   gam = serverID.roles.cache.get("779392133584781353");
 
   vc = serverID.channels.cache.get('481332016307240960');
-  vtxt = serverID.channels.cache.get('481331967699320842');
-  mroom = serverID.channels.cache.get('482385789271932967');
-  
+  vtxt = serverID.channels.cache.get('481331967699320842');  
 
 });
 
 client.on('message', msg => {
   // console.log('Claim:',msg.content);
   // fk.push(msg);
-    //fs.appendFile('perlog.json', JSON.stringify(msg), function (err) {if (err) throw err;});
     // if( vip.includes(msg.author.id) && (msg.channel.id === vtxt.id) ){ //(msg.channel.type === "dm") ){
     if( msg.member && msg.member.roles.cache.has(shost.id) && (msg.channel.id === vtxt.id) ){ //(msg.channel.type === "dm") ){
       // number: set scale.txt and update scale.svg
@@ -85,11 +74,7 @@ client.on('message', msg => {
       else if(['mute','m','Mute','M','unmute','Unmute','um','Um'].includes(msg.content.split(' ')[0]) ){
         if( ['mute','m','Mute','M'].includes(msg.content.split(' ')[0]) ){
           // console.log('Mute:',msg.content);
-          let mentcount = 0;
-          if (msg.mentions) 
-          if (msg.mentions.users.size > 0)
-            mentcount = msg.mentions.users.size;
-          if(mentcount){ // console.log('mentions',msg.mentions);
+          if(has_user_mentions(msg)){
             vc.members.forEach(vcm => { // console.log('each:',vcm.user.id);
               if( msg.mentions.has(vcm.user.id) )// console.log('mentioned:',vcm.user.id);
                 vcm.voice.setChannel(vc).catch(err => console.log(err)); 
@@ -101,13 +86,9 @@ client.on('message', msg => {
             });
           }
         }//unmute below
-        else{  console.log('Unmute:',msg.content);
-          let mentcount = 0;
-          if (msg.mentions) 
-          if (msg.mentions.users.size > 0) {
-            mentcount = msg.mentions.users.size;
-          }
-          if(mentcount){ // console.log('mentions',msg.mentions);
+        else{
+          console.log('Unmute:',msg.content);
+          if(has_user_mentions(msg)){
             vc.members.forEach(vcm => { // console.log('each:',vcm.user.id);
               if( msg.mentions.has( vcm.user.id ) ) // console.log('mentioned:',vcm.user.id);
                 vcm.voice.setMute(false).catch(err => console.log(err));
@@ -117,16 +98,9 @@ client.on('message', msg => {
             vc.members.forEach(vcm => vcm.voice.setMute(false).catch(err => console.log(err)) );
           }// console.log('anyeach:',vcm.user.id);
         }
-      }// text: set claim.txt
-      // else if(msg.content[0] === '-'){  console.log('Claim:',msg.content);
-      //   fs.writeFileSync('claim.txt', msg.content.substring(1) ,{encoding:'utf8',flag:'w'});
-      // }
+      }
       else if(['guest','Guest'].includes(msg.content.split(' ')[0])){
-        let mentcount = 0;
-        if (msg.mentions) 
-        if (msg.mentions.users.size > 0)
-          mentcount = msg.mentions.users.size;
-        if(mentcount){
+        if(has_user_mentions(msg)){
           msg.mentions.members.forEach(user => {
             user.roles.add(sguest)
               .then( () => { user.voice.setChannel(vc).catch(err => console.log(err)) } )
@@ -138,11 +112,7 @@ client.on('message', msg => {
         fs.writeFileSync('guest.txt', msg.content.substring( msg.content.split(' ')[0].length ) ,{encoding:'utf8',flag:'w'});
       }
       else if(['unguest','Unguest'].includes(msg.content.split(' ')[0])){
-        let mentcount = 0;
-        if (msg.mentions) 
-        if (msg.mentions.users.size > 0)
-          mentcount = msg.mentions.users.size;
-        if(mentcount){
+        if(has_user_mentions(msg)){
           msg.mentions.members.forEach(user => {
             user.roles.remove(sguest)
               .then( () => { user.voice.setChannel(vc).catch(err => console.log(err)) } )
@@ -151,11 +121,7 @@ client.on('message', msg => {
         }
       }
       else if(['game','Game'].includes(msg.content.split(' ')[0])){
-        let mentcount = 0;
-        if (msg.mentions) 
-        if (msg.mentions.users.size > 0)
-          mentcount = msg.mentions.users.size;
-        if(mentcount){
+        if(has_user_mentions(msg)){
           msg.mentions.members.forEach(user => {
             user.roles.add(gam)
               .then( () => { user.roles.remove(mem).catch(err => console.log(err)) } )
@@ -166,11 +132,7 @@ client.on('message', msg => {
         }
       }
       else if(['ungame','Ungame'].includes(msg.content.split(' ')[0])){
-        let mentcount = 0;
-        if (msg.mentions) 
-        if (msg.mentions.users.size > 0)
-          mentcount = msg.mentions.users.size;
-        if(mentcount){
+        if(has_user_mentions(msg)){
           msg.mentions.members.forEach(user => {
             user.roles.remove(gam)
               .then( () => { user.roles.add(mem).catch(err => console.log(err)) } )
@@ -182,7 +144,6 @@ client.on('message', msg => {
       else if(['unclench','Unclench'].includes(msg.content.split(' ')[0])){
         sguest.members.forEach(user => {
           user.roles.remove(sguest).catch(err => console.log(err));
-          // user.voice.setChannel(vc).catch(err => console.log(err));
           serverID.members.cache.get("658378708893302784").setNickname( "JugglingLessons" ).catch(err => console.log(err));
         });
       }
@@ -221,7 +182,6 @@ client.on('message', msg => {
         });
         msg.channel.send("List of saved messages:");
         msg.channel.send(qlist);
-        console.log(qlist);
         questions = [];
       }
       else if(['camera','Camera'].includes(msg.content.split(' ')[0])){
@@ -237,11 +197,7 @@ client.on('message', msg => {
         // clean = cleanoutput,
         msg.author.send(ninja_link_camera).catch(err => console.log(err)); 
         msg.author.send(`https://obs.ninja/?view=${camname}&label=${camname}&codec=h264&bitrate=500&clean`).catch(err => console.log(err));
-        let mentcount = 0;
-        if (msg.mentions) 
-        if (msg.mentions.users.size > 0)
-          mentcount = msg.mentions.users.size;
-        if(mentcount){
+        if(has_user_mentions(msg)){
           msg.mentions.users.forEach(camuser => {ninja_link_camera
               camuser.send(`Hi, please use the link below to send your camera feed to our show:`).catch(err => console.log(err)); 
               camuser.send(ninja_link_camera).catch(err => console.log(err)); 
@@ -263,25 +219,19 @@ client.on('message', msg => {
         msg.author.send(ninja_link_room).catch(err => console.log(err));
         msg.author.send(`https://obs.ninja/?view=${room8}&codec=h264&bitrate=500&room=JugglingLessons${roomnum}&password=2uj6b548j1b&wc&scene`).catch(err => console.log(err));
 
-        let mentcount = 0;
-        if (msg.mentions) 
-        if (msg.mentions.users.size > 0)
-          mentcount = msg.mentions.users.size;
-        if(mentcount){
+        if(has_user_mentions(msg)){
           msg.mentions.users.forEach(camuser => {
               camuser.send(`Hi, please use the link below to join our show's video chat:`).catch(err => console.log(err));
               camuser.send(ninja_link_room).catch(err => console.log(err)); 
           });
         }
       }
-      
       // ninja_link ='&cleanoutput&hideheader&label={somename}';
   
   // ninja_link_viewer = '&view={value1}&codec={vp8 or vp9 or h264}&videobitrate=1000&audiobitrate=96'
 
   //https://obs.ninja/?view=CircleTheSquare&label=Near&codec=h264&bitrate=500&cleanoutput
   //https://obs.ninja/?push=CircleTheSquare&cleanoutput&hideheader&label=CircleTheSquare&webcam&audiodevice=0&autostart&framerate=25&maxvideobitrate=1000&height=1080&width=1080
-
 
     }
     if(msg.channel.id === vtxt.id){ //msg.member && msg.member.roles.cache.has(mem.id) &&
@@ -310,7 +260,7 @@ client.on('messageReactionAdd', (reaction, user) => {
       questions.push(msg.content.substring(1));
       reaction.remove();
     }
-    if (emoji.name == '⏭️') {
+    if (emoji.name == enext) {
       suri++;
       next_survey_q(msg);
     }
@@ -328,6 +278,14 @@ client.on('messageReactionAdd', (reaction, user) => {
   // // reaction.remove(user);
 });
 
+function has_user_mentions(msg) {
+  if (!msg.mentions)
+    return false 
+  if (msg.mentions.users.size > 0)
+    return true
+  return false
+}
+
 function next_survey_q (msg) {
   if (suri <= 24) {
     msg.channel.send(`${suri}. ${surq[suri]}`)
@@ -337,7 +295,7 @@ function next_survey_q (msg) {
         message.react('3️⃣').catch(err => console.log(err))
         message.react('4️⃣').catch(err => console.log(err))
         message.react('5️⃣').catch(err => console.log(err))
-        message.react('⏭️').catch(err => console.log(err))
+        message.react(enext).catch(err => console.log(err))
     }).catch(err => console.log(err));
   }
   else{
