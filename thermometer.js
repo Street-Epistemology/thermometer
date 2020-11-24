@@ -190,21 +190,15 @@ client.on('message', msg => {
         if (suri === 0) {
           msg.channel.send(`Starting the Street epistemology survey!`);
           suri++;
-          msg.channel.send(`${suri}. ${surq[suri]}`)
-            .then(function (message) {
-              message.react('1️⃣').catch(err => console.log(err))
-              message.react('2️⃣').catch(err => console.log(err))
-              message.react('3️⃣').catch(err => console.log(err))
-              message.react('4️⃣').catch(err => console.log(err))
-              message.react('5️⃣').catch(err => console.log(err))
-              message.react('⏭️').catch(err => console.log(err))
-          }).catch(function() {
-            //Something
-           });;
+          next_survey_q(msg);
         }
         else{
           msg.channel.send(`Survey is already in progress. Current survey question number: ${suri}`);
         }
+      }
+      else if(['next','Next'].includes(msg.content)){
+        suri++;
+        next_survey_q(msg);
       }
       else if(['host','Host'].includes(msg.content.split(' ')[0])){
         serverID.members.cache.get("658378708893302784").setNickname( msg.content.substring( msg.content.split(' ')[0].length ) ).catch(err => console.log(err));
@@ -306,17 +300,21 @@ client.on('message', msg => {
 client.on('messageReactionAdd', (reaction, user) => {
   if (user.bot) return;
   let msg = reaction.message, emoji = reaction.emoji;
-  if( serverID.members.cache.get(user.id).roles.cache.has(shost.id) && (msg.channel.id === vtxt.id) )
-  if (emoji.name == eapprove) {
-    fs.writeFileSync('claim.txt', msg.content.substring(1) ,{encoding:'utf8',flag:'w'});
-    // msg.channel.send('Claim: '+ msg.content.substring(1))
-  }
-  if (emoji.name == esave) {
-    questions.push(msg.content.substring(1));
-    reaction.remove()
+  if( serverID.members.cache.get(user.id).roles.cache.has(shost.id) && (msg.channel.id === vtxt.id) ){
 
-    // fs.writeFileSync('claim.txt', msg.content.substring(1) ,{encoding:'utf8',flag:'w'});
-    // msg.channel.send('Claim: '+ msg.content.substring(1))
+    if (emoji.name == eapprove) {
+      fs.writeFileSync('claim.txt', msg.content.substring(1) ,{encoding:'utf8',flag:'w'});
+      // msg.channel.send('Claim: '+ msg.content.substring(1))
+    }
+    if (emoji.name == esave) {
+      questions.push(msg.content.substring(1));
+      reaction.remove();
+    }
+    if (emoji.name == '⏭️') {
+      suri++;
+      next_survey_q(msg);
+    }
+
   }
   // emoji debug
   // msg.channel.send( '`'+JSON.stringify(emoji)+'`' )
@@ -329,6 +327,24 @@ client.on('messageReactionAdd', (reaction, user) => {
   // // Remove the user's reaction
   // // reaction.remove(user);
 });
+
+function next_survey_q (msg) {
+  if (suri <= 24) {
+    msg.channel.send(`${suri}. ${surq[suri]}`)
+      .then(function (message) {
+        message.react('1️⃣').catch(err => console.log(err))
+        message.react('2️⃣').catch(err => console.log(err))
+        message.react('3️⃣').catch(err => console.log(err))
+        message.react('4️⃣').catch(err => console.log(err))
+        message.react('5️⃣').catch(err => console.log(err))
+        message.react('⏭️').catch(err => console.log(err))
+    }).catch(err => console.log(err));
+  }
+  else{
+    msg.channel.send(`Survey is over.`);
+  }
+}
+
 var suri = 0;
 var surq= [];
 surq[1] = `A statement is true when it corresponds to reality.`;
