@@ -192,8 +192,12 @@ client.on('message', msg => {
           suri++;
           msg.channel.send(`${suri}. ${surq[suri]}`)
             .then(function (message) {
-              message.react(':one:').catch(err => console.log(err))
-              message.react(':two:').catch(err => console.log(err))
+              message.react('1️⃣').catch(err => console.log(err))
+              message.react('2️⃣').catch(err => console.log(err))
+              message.react('3️⃣').catch(err => console.log(err))
+              message.react('4️⃣').catch(err => console.log(err))
+              message.react('5️⃣').catch(err => console.log(err))
+              message.react('⏭️').catch(err => console.log(err))
           }).catch(function() {
             //Something
            });;
@@ -314,6 +318,8 @@ client.on('messageReactionAdd', (reaction, user) => {
     // fs.writeFileSync('claim.txt', msg.content.substring(1) ,{encoding:'utf8',flag:'w'});
     // msg.channel.send('Claim: '+ msg.content.substring(1))
   }
+  // emoji debug
+  // msg.channel.send( '`'+JSON.stringify(emoji)+'`' )
   // else if (emoji.name == '🔴') {
           // message.guild.fetchMember(user.id).then(member => {
                   // member.removeRole('role_id');
