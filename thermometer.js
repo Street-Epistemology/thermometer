@@ -342,6 +342,7 @@ function next_survey_q (msg) {
   }
   else{
     msg.channel.send(`Survey is over.`);
+    suri = 0;
   }
 }
 
