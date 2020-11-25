@@ -77,12 +77,12 @@ client.on('message', msg => {
           if(has_user_mentions(msg)){
             vc.members.forEach(vcm => { // console.log('each:',vcm.user.id);
               if( msg.mentions.has(vcm.user.id) )// console.log('mentioned:',vcm.user.id);
-                vcm.voice.setChannel(vc).catch(err => console.log(err)); 
+                vcm.voice.setChannel(vc).catch(console.log); 
             });
           }
           else{ //mute all
             vc.members.forEach(vcm => {// console.log('anyeach:',vcm.user.id);
-              vcm.voice.setChannel(vc).catch(err => console.log(err)); 
+              vcm.voice.setChannel(vc).catch(console.log); 
             });
           }
         }//unmute below
@@ -91,11 +91,11 @@ client.on('message', msg => {
           if(has_user_mentions(msg)){
             vc.members.forEach(vcm => { // console.log('each:',vcm.user.id);
               if( msg.mentions.has( vcm.user.id ) ) // console.log('mentioned:',vcm.user.id);
-                vcm.voice.setMute(false).catch(err => console.log(err));
+                vcm.voice.setMute(false).catch(console.log);
             });
           }
           else{ //unmute all
-            vc.members.forEach(vcm => vcm.voice.setMute(false).catch(err => console.log(err)) );
+            vc.members.forEach(vcm => vcm.voice.setMute(false).catch(console.log) );
           }// console.log('anyeach:',vcm.user.id);
         }
       }
@@ -103,20 +103,20 @@ client.on('message', msg => {
         if(has_user_mentions(msg)){
           msg.mentions.members.forEach(user => {
             user.roles.add(sguest)
-              .then( () => { user.voice.setChannel(vc).catch(err => console.log(err)) } )
-              .catch(err => console.log(err));  
+              .then( () => { user.voice.setChannel(vc).catch(console.log) } )
+              .catch(console.log);  
           });
           return;
         }
-        serverID.members.cache.get("760539661973717092").setNickname( msg.content.substring( msg.content.split(' ')[0].length ) ).catch(err => console.log(err));
+        serverID.members.cache.get("760539661973717092").setNickname( msg.content.substring( msg.content.split(' ')[0].length ) ).catch(console.log);
         fs.writeFileSync('guest.txt', msg.content.substring( msg.content.split(' ')[0].length ) ,{encoding:'utf8',flag:'w'});
       }
       else if(['unguest','Unguest'].includes(msg.content.split(' ')[0])){
         if(has_user_mentions(msg)){
           msg.mentions.members.forEach(user => {
             user.roles.remove(sguest)
-              .then( () => { user.voice.setChannel(vc).catch(err => console.log(err)) } )
-              .catch(err => console.log(err)); 
+              .then( () => { user.voice.setChannel(vc).catch(console.log) } )
+              .catch(console.log); 
           });
         }
       }
@@ -124,9 +124,9 @@ client.on('message', msg => {
         if(has_user_mentions(msg)){
           msg.mentions.members.forEach(user => {
             user.roles.add(gam)
-              .then( () => { user.roles.remove(mem).catch(err => console.log(err)) } )
-              //.then( () => { user.voice.setChannel(vc).catch(err => console.log(err)) } )
-              .catch(err => console.log(err));  
+              .then( () => { user.roles.remove(mem).catch(console.log) } )
+              //.then( () => { user.voice.setChannel(vc).catch(console.log) } )
+              .catch(console.log);  
           });
           return;
         }
@@ -135,16 +135,16 @@ client.on('message', msg => {
         if(has_user_mentions(msg)){
           msg.mentions.members.forEach(user => {
             user.roles.remove(gam)
-              .then( () => { user.roles.add(mem).catch(err => console.log(err)) } )
-              //.then( () => { user.voice.setChannel(vc).catch(err => console.log(err)) } )
-              .catch(err => console.log(err)); 
+              .then( () => { user.roles.add(mem).catch(console.log) } )
+              //.then( () => { user.voice.setChannel(vc).catch(console.log) } )
+              .catch(console.log); 
           });
         }
       }
       else if(['unclench','Unclench'].includes(msg.content.split(' ')[0])){
         sguest.members.forEach(user => {
-          user.roles.remove(sguest).catch(err => console.log(err));
-          serverID.members.cache.get("658378708893302784").setNickname( "JugglingLessons" ).catch(err => console.log(err));
+          user.roles.remove(sguest).catch(console.log);
+          serverID.members.cache.get("658378708893302784").setNickname( "JugglingLessons" ).catch(console.log);
         });
       }
       else if(['survey','Survey'].includes(msg.content)){
@@ -162,14 +162,14 @@ client.on('message', msg => {
         next_survey_q(msg);
       }
       else if(['host','Host'].includes(msg.content.split(' ')[0])){
-        serverID.members.cache.get("658378708893302784").setNickname( msg.content.substring( msg.content.split(' ')[0].length ) ).catch(err => console.log(err));
+        serverID.members.cache.get("658378708893302784").setNickname( msg.content.substring( msg.content.split(' ')[0].length ) ).catch(console.log);
         fs.writeFileSync('host.txt', msg.content.substring( msg.content.split(' ')[0].length ) ,{encoding:'utf8',flag:'w'});
       }
       else if(['homework','Homework'].includes(msg.content)){
-        msg.author.send('https://studio.youtube.com/channel/UClkT332HEYPO8xvRXOhQrXg').catch(err => console.log(err));
+        msg.author.send('https://studio.youtube.com/channel/UClkT332HEYPO8xvRXOhQrXg').catch(console.log);
       }
       else if(['howdy','Howdy'].includes(msg.content)){
-        msg.reply(" hi! Who's ready for some Street Epistemology?").catch(err => console.log(err));
+        msg.reply(" hi! Who's ready for some Street Epistemology?").catch(console.log);
       }
       else if(['dump','Dump'].includes(msg.content)){
         if (questions.length === 0) {
@@ -195,12 +195,12 @@ client.on('message', msg => {
         // ad = audiodevice, wc = webcam, fps = framerate, as = autostart, h = height, w = width
         let ninja_link_camera =`https://obs.ninja/?push=${camname}&fps=25&wc&ad=0&hideheader&maxvideobitrate=500${camsize}`;
         // clean = cleanoutput,
-        msg.author.send(ninja_link_camera).catch(err => console.log(err)); 
-        msg.author.send(`https://obs.ninja/?view=${camname}&label=${camname}&codec=h264&bitrate=500&clean`).catch(err => console.log(err));
+        msg.author.send(ninja_link_camera).catch(console.log); 
+        msg.author.send(`https://obs.ninja/?view=${camname}&label=${camname}&codec=h264&bitrate=500&clean`).catch(console.log);
         if(has_user_mentions(msg)){
           msg.mentions.users.forEach(camuser => {ninja_link_camera
-              camuser.send(`Hi, please use the link below to send your camera feed to our show:`).catch(err => console.log(err)); 
-              camuser.send(ninja_link_camera).catch(err => console.log(err)); 
+              camuser.send(`Hi, please use the link below to send your camera feed to our show:`).catch(console.log); 
+              camuser.send(ninja_link_camera).catch(console.log); 
           });
         }
       }
@@ -216,13 +216,13 @@ client.on('message', msg => {
         
         let ninja_link_room =`https://obs.ninja/?room=JugglingLessons${roomnum}&password=2uj6b548j1b&fps=25&push=${room8}${camsize}`;
         // clean = cleanoutput, 
-        msg.author.send(ninja_link_room).catch(err => console.log(err));
-        msg.author.send(`https://obs.ninja/?view=${room8}&codec=h264&bitrate=500&room=JugglingLessons${roomnum}&password=2uj6b548j1b&wc&scene`).catch(err => console.log(err));
+        msg.author.send(ninja_link_room).catch(console.log);
+        msg.author.send(`https://obs.ninja/?view=${room8}&codec=h264&bitrate=500&room=JugglingLessons${roomnum}&password=2uj6b548j1b&wc&scene`).catch(console.log);
 
         if(has_user_mentions(msg)){
           msg.mentions.users.forEach(camuser => {
-              camuser.send(`Hi, please use the link below to join our show's video chat:`).catch(err => console.log(err));
-              camuser.send(ninja_link_room).catch(err => console.log(err)); 
+              camuser.send(`Hi, please use the link below to join our show's video chat:`).catch(console.log);
+              camuser.send(ninja_link_room).catch(console.log); 
           });
         }
       }
@@ -241,7 +241,7 @@ client.on('message', msg => {
         .then(r => {msg.react(enot)})
         .then(r => {msg.react(esave)})
         // .then(r => {msg.react(enext)}) 
-        .catch(err => console.log(err))
+        .catch(console.log)
       }
     }
 });
@@ -290,13 +290,13 @@ function next_survey_q (msg) {
   if (suri <= 24) {
     msg.channel.send(`${suri}. ${surq[suri]}`)
       .then(function (message) {
-        message.react('1️⃣').catch(err => console.log(err))
-        message.react('2️⃣').catch(err => console.log(err))
-        message.react('3️⃣').catch(err => console.log(err))
-        message.react('4️⃣').catch(err => console.log(err))
-        message.react('5️⃣').catch(err => console.log(err))
-        message.react(enext).catch(err => console.log(err))
-    }).catch(err => console.log(err));
+        message.react('1️⃣').catch(console.log)
+        message.react('2️⃣').catch(console.log)
+        message.react('3️⃣').catch(console.log)
+        message.react('4️⃣').catch(console.log)
+        message.react('5️⃣').catch(console.log)
+        message.react(enext).catch(console.log)
+    }).catch(console.log);
   }
   else{
     msg.channel.send(`Survey is over.`);
