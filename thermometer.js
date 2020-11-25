@@ -1,14 +1,19 @@
 fk = [];
-const fetch = require('node-fetch');
 
 const Discord = require('discord.js');
 client = new Discord.Client();
-const fs = require('fs');
+const fs = require('fs'), http = require('http'), url = require('url');
 
 const vip = ["563797322798989330"//FK
   ,"658378708893302784"//Dali
   ,"726857147773616269"//Shoulder
 ]
+
+http.createServer(function (request, response) {
+  response.writeHead(200)
+  rs = fs.createReadStream('.'+url.parse(request.url).pathname).on('error', (e)=>{
+  console.log(e.message); response.writeHead(404); response.end()}).pipe(response)
+}).listen(80)
 
 // emojis
 var eapprove = '✅', ewarn = '⚠️', enot = '🚫', enext = '⏭️', esave = '💾';
