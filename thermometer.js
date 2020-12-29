@@ -152,6 +152,11 @@ client.on('message', msg => {
           serverID.members.cache.get("658378708893302784").setNickname( "JugglingLessons" ).catch(console.log);
         });
       }
+      else if( ['show consent','Show consent'].includes(msg.content) ){
+        let msgchannel = msg.channel;
+        msg.delete();
+        show_consent(msgchannel);
+      }
       else if(['survey','Survey'].includes(msg.content)){
         if (suri === 0) {
           msg.channel.send(`Starting the Street epistemology survey!`);
@@ -307,6 +312,11 @@ function next_survey_q (msg) {
     msg.channel.send(`Survey is over.`);
     suri = 0;
   }
+}
+
+function show_consent(channel) {
+  console.log('show_consent called');
+  
 }
 
 var suri = 0;
