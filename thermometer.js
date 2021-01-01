@@ -1,5 +1,5 @@
 fk = [];
-
+console.log('code is running');
 const Discord = require('discord.js');
 client = new Discord.Client();
 const fs = require('fs'), http = require('http'), url = require('url');
