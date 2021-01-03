@@ -61,8 +61,9 @@ client.on('ready', () => {
   gam = serverID.roles.cache.get("779392133584781353");
 
   vc = serverID.channels.cache.get('481332016307240960');
-  vtxt = serverID.channels.cache.get('481331967699320842');  
-
+  vtxt = serverID.channels.cache.get('481331967699320842');
+  roles_chan = serverID.channels.cache.get('613093421581729818')
+  consent_msg = 'React with :red_circle: to give your consent to getting your audio/video published on our live/recorded events. Go to <#'+roles_chan.id+'> to revoke consent.'
 });
 
 client.on('message', msg => {
@@ -275,6 +276,21 @@ client.on('messageReactionAdd', (reaction, user) => {
       suri++;
       next_survey_q(msg);
     }
+    if (emoji.name == '🔴') {
+      if (msg.content == consent_msg){
+        if ( reaction.message.guild.member(user).roles.cache.has(recons.id)
+         ) {
+          return user.send("You already gave consent, you have the role.")
+        }
+        else{
+          reaction.message.guild.member(user).roles.add(recons)
+          .then(msg.channel.send("Consent given by <@"+user.id+">"))
+          .catch(console.log);
+        }
+
+      }
+    }
+    console.log('"'+msg.content+'"');
 
   }
   // emoji debug
@@ -317,7 +333,8 @@ function next_survey_q (msg) {
 
 function show_consent(channel) {
   console.log('show_consent called');
-  
+  channel.send(consent_msg)
+  .then(msg => msg.react('🔴'))
 }
 
 var suri = 0;
