@@ -127,27 +127,27 @@ client.on('message', msg => {
           });
         }
       }
-      else if(['game','Game'].includes(msg.content.split(' ')[0])){
-        if(has_user_mentions(msg)){
-          msg.mentions.members.forEach(user => {
-            user.roles.add(gam)
-              .then( () => { user.roles.remove(mem).catch(console.log) } )
-              //.then( () => { user.voice.setChannel(vc).catch(console.log) } )
-              .catch(console.log);  
-          });
-          return;
-        }
-      }
-      else if(['ungame','Ungame'].includes(msg.content.split(' ')[0])){
-        if(has_user_mentions(msg)){
-          msg.mentions.members.forEach(user => {
-            user.roles.remove(gam)
-              .then( () => { user.roles.add(mem).catch(console.log) } )
-              //.then( () => { user.voice.setChannel(vc).catch(console.log) } )
-              .catch(console.log); 
-          });
-        }
-      }
+      // else if(['game','Game'].includes(msg.content.split(' ')[0])){
+      //   if(has_user_mentions(msg)){
+      //     msg.mentions.members.forEach(user => {
+      //       user.roles.add(gam)
+      //         .then( () => { user.roles.remove(mem).catch(console.log) } )
+      //         //.then( () => { user.voice.setChannel(vc).catch(console.log) } )
+      //         .catch(console.log);  
+      //     });
+      //     return;
+      //   }
+      // }
+      // else if(['ungame','Ungame'].includes(msg.content.split(' ')[0])){
+      //   if(has_user_mentions(msg)){
+      //     msg.mentions.members.forEach(user => {
+      //       user.roles.remove(gam)
+      //         .then( () => { user.roles.add(mem).catch(console.log) } )
+      //         //.then( () => { user.voice.setChannel(vc).catch(console.log) } )
+      //         .catch(console.log); 
+      //     });
+      //   }
+      // }
       else if(['unclench','Unclench'].includes(msg.content.split(' ')[0])){
         sguest.members.forEach(user => {
           user.roles.remove(sguest).catch(console.log);
