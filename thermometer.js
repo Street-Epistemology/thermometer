@@ -99,10 +99,22 @@ client.on('message', msg => {
             vc.members.forEach(vcm => { // console.log('each:',vcm.user.id);
               if( msg.mentions.has( vcm.user.id ) ) // console.log('mentioned:',vcm.user.id);
                 vcm.voice.setMute(false).catch(console.log);
+              console.log( vcm.roles.cache.has(recons) )
             });
           }
           else{ //unmute all
-            vc.members.forEach(vcm => vcm.voice.setMute(false).catch(console.log) );
+            nocons = [];
+            vc.members.forEach(vcm =>{
+              if(vcm.roles.cache.has(recons.id))
+                vcm.voice.setMute(false).catch(console.log)
+              else{
+                nocons.push(`<@${vcm.id}>`);
+              }
+            });
+            noconsmention = nocons.join(' ');
+            msg.channel.send(`All but the following members were muted:\n${noconsmention}\nFollow instructions bellow to get the role and ask in chat to be unmuted.`);
+            show_consent(msg.channel);
+
           }// console.log('anyeach:',vcm.user.id);
         }
       }
@@ -115,7 +127,6 @@ client.on('message', msg => {
           });
           return;
         }
-        serverID.members.cache.get("760539661973717092").setNickname( msg.content.substring( msg.content.split(' ')[0].length ) ).catch(console.log);
         fs.writeFileSync('guest.txt', msg.content.substring( msg.content.split(' ')[0].length ) ,{encoding:'utf8',flag:'w'});
       }
       else if(['unguest','Unguest'].includes(msg.content.split(' ')[0])){
@@ -151,13 +162,11 @@ client.on('message', msg => {
       else if(['unclench','Unclench'].includes(msg.content.split(' ')[0])){
         sguest.members.forEach(user => {
           user.roles.remove(sguest).catch(console.log);
-          serverID.members.cache.get("658378708893302784").setNickname( "JugglingLessons" ).catch(console.log);
         });
       }
       else if( ['show consent','Show consent'].includes(msg.content) ){
-        let msgchannel = msg.channel;
+        show_consent(msg.channel);
         msg.delete();
-        show_consent(msgchannel);
       }
       else if(['survey','Survey'].includes(msg.content)){
         if (suri === 0) {
@@ -174,7 +183,6 @@ client.on('message', msg => {
         next_survey_q(msg);
       }
       else if(['host','Host'].includes(msg.content.split(' ')[0])){
-        serverID.members.cache.get("658378708893302784").setNickname( msg.content.substring( msg.content.split(' ')[0].length ) ).catch(console.log);
         fs.writeFileSync('host.txt', msg.content.substring( msg.content.split(' ')[0].length ) ,{encoding:'utf8',flag:'w'});
       }
       else if(['homework','Homework'].includes(msg.content)){
@@ -280,7 +288,7 @@ client.on('messageReactionAdd', (reaction, user) => {
       if (msg.content == consent_msg){
         if ( reaction.message.guild.member(user).roles.cache.has(recons.id)
          ) {
-          return user.send("You already gave consent, you have the role.")
+          return user.send("You already gave recording consent, you have the role.")
         }
         else{
           reaction.message.guild.member(user).roles.add(recons)
@@ -347,7 +355,7 @@ surq[5] = `A statement is true if everyone agrees.`;
 surq[6] = `Strong belief, even without action, can change external reality.`;
 surq[7] = `Some beliefs should never be questioned.`;
 surq[8] = `Someone can be certain something is true yet still be mistaken.`;
-surq[9] = `A test that cannot identify a failure is useful.`;
+surq[9] = `A test that cannot identify a failure is a valid test.`;
 surq[10] = `If all members of a society share a belief, they are justified to hold that belief.`;
 surq[11] = `Believing something that is false feels just like believing something that is true.`;
 surq[12] = `Feelings are a reliable way to discover truth.`;
