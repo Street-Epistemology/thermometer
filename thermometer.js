@@ -35,7 +35,7 @@ client.on('ready', () => {
              _____ _                               _              _       _               
             |_   _| |_ ___ ___ _____ ___ _____ ___| |_ ___ ___   | |_ ___| |_             
               | | |   | -_|  _|     | . |     | -_|  _| -_|  _|  | . | . |  _|            
-              |_| |_|_|___|_| |_|_|_|___|_|_|_|___|_| |___|_|    |___|___|_|    Online v1.10          
+              |_| |_|_|___|_| |_|_|_|___|_|_|_|___|_| |___|_|    |___|___|_|    Online v1.11          
                                                                                           
                                                                                           
                                          _          _____ _____                           
@@ -59,7 +59,9 @@ client.on('ready', () => {
   mem = serverID.roles.cache.get("481250243380248576");
   // Game role
   gam = serverID.roles.cache.get("779392133584781353");
-
+  // Spanish temas
+  temas = serverID.channels.cache.get("818878694281838632");
+  
   vc = serverID.channels.cache.get('481332016307240960');
   vtxt = serverID.channels.cache.get('481331967699320842');
   roles_chan = serverID.channels.cache.get('613093421581729818')
@@ -264,6 +266,48 @@ client.on('message', msg => {
         .catch(console.log)
       }
     }
+  if( msg.channel && msg.channel.parent && msg.channel.parent.id == '482724681367945236' && msg.channel.id != 'FK818878694281838632' ){
+    if(['*temas','*Temas'].includes(msg.content.split(' ')[0])){
+      temas.messages.fetch({ limit: 100 }).then(messages => {
+        let peepIDs = [];
+        if(has_user_mentions(msg)){
+          msg.mentions.members.forEach(user => {
+            peepIDs.push( user.id ); 
+          });
+        }else{
+          peepIDs.push( msg.author.id );
+        }  // messages.sweep(post => (post.author.id !== msg.author.id) );
+        messages.sweep(post => ( !peepIDs.includes( post.author.id ) ) );
+        if(messages.size>0){
+          messages.sort();
+          let temarr = [], temind = 1, temlist ='';
+          console.log(`Received ${messages.size} messages. Peep: ${peepIDs.length}`);
+          if( peepIDs.length<2 ){
+            messages.forEach(message => temarr.push(...message.content.split('\n')) );
+            temarr.forEach(tema => temlist+='`'+((temarr.length>9)&&(temind<10)?' ':'')+(temind++)+'.` '+tema+'\n' );
+          }else{
+            let currauthor = '*';
+            messages.forEach(message => {
+              if ( currauthor !== message.author.username ) {
+                currauthor = message.author.username;
+                if (temarr.length) {
+                  temarr.forEach(tema => temlist+='`'+((temarr.length>9)&&(temind<10)?' ':'')+(temind++)+'.` '+tema+'\n' );
+                  temarr=[];
+                  temind=1;
+                }
+                temlist+= `**${currauthor}:**\n` ;
+              }
+              temarr.push( ...message.content.split('\n') );
+            });
+            temarr.forEach(tema => temlist+='`'+((temarr.length>9)&&(temind<10)?' ':'')+(temind++)+'.` '+tema+'\n' );
+          }
+          msg.channel.send( temlist );
+        }else{
+          msg.channel.send( "No tiene temas." );
+        }
+      })
+    }
+  }
 });
 
 // Same code as above
@@ -284,23 +328,24 @@ client.on('messageReactionAdd', (reaction, user) => {
       suri++;
       next_survey_q(msg);
     }
-    if (emoji.name == '🔴') {
-      if (msg.content == consent_msg){
-        if ( reaction.message.guild.member(user).roles.cache.has(recons.id)
-         ) {
-          return user.send("You already gave recording consent, you have the role.")
-        }
-        else{
-          reaction.message.guild.member(user).roles.add(recons)
-          .then(msg.channel.send("Consent given by <@"+user.id+">"))
-          .catch(console.log);
-        }
-
-      }
-    }
     console.log('"'+msg.content+'"');
-
   }
+
+  if (emoji.name == '🔴') {
+    if (msg.content == consent_msg){
+      if ( reaction.message.guild.member(user).roles.cache.has(recons.id)
+       ) {
+        return user.send("You already gave recording consent, you have the role.")
+      }
+      else{
+        reaction.message.guild.member(user).roles.add(recons)
+        .then(msg.channel.send("Consent given by <@"+user.id+">"))
+        .catch(console.log);
+      }
+
+    }
+  }
+  
   // emoji debug
   // msg.channel.send( '`'+JSON.stringify(emoji)+'`' )
   // else if (emoji.name == '🔴') {

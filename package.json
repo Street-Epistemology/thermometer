@@ -1,6 +1,6 @@
 {
   "name": "thermometer",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "Bot for the Street Epistemology Discord live shows.",
   "main": "thermometer.js",
   "scripts": {
