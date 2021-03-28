@@ -285,23 +285,31 @@ client.on('message', msg => {
           if( peepIDs.length<2 ){
             messages.forEach(message => temarr.push(...message.content.split('\n')) );
             temarr.forEach(tema => temlist+='`'+((temarr.length>9)&&(temind<10)?' ':'')+(temind++)+'.` '+tema+'\n' );
-          }else{
+            msg.channel.send( temlist );
+          }else if(peepIDs.length<6){
             let currauthor = '*';
             messages.forEach(message => {
-              if ( currauthor !== message.author.username ) {
-                currauthor = message.author.username;
+              if ( currauthor !== message.author.id ) {
+                currauthor = message.author.id;
                 if (temarr.length) {
                   temarr.forEach(tema => temlist+='`'+((temarr.length>9)&&(temind<10)?' ':'')+(temind++)+'.` '+tema+'\n' );
                   temarr=[];
                   temind=1;
                 }
-                temlist+= `**${currauthor}:**\n` ;
+                if(temlist)
+                msg.channel.send( temlist );
+                temlist='';
+                fk.push(message.author)
+                temlist+= `**${serverID.member(message.author).displayName }:**\n` ;
               }
               temarr.push( ...message.content.split('\n') );
             });
             temarr.forEach(tema => temlist+='`'+((temarr.length>9)&&(temind<10)?' ':'')+(temind++)+'.` '+tema+'\n' );
+            msg.channel.send( temlist );
           }
-          msg.channel.send( temlist );
+          else if(peepIDs.length>5){
+            msg.channel.send( "El maximo es 5. Visita <#818878694281838632> para ver todos los temas." );
+          }
         }else{
           msg.channel.send( "No tiene temas." );
         }
