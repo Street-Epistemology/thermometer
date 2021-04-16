@@ -17,13 +17,13 @@ http.createServer(function (request, response) {
 }).listen(80)
 
 // emojis
-var eapprove = '✅', ewarn = '⚠️', enot = '🚫', enext = '⏭️', esave = '💾';
+var emojiApprove = '✅', emojiWarn = '⚠️', emojiNot = '🚫', emojiNext = '⏭️'
+  , emojiSave = '💾', emojiRecord = '🔴';
 
 var scale = fs.readFileSync('thermometer.svg', 'utf8');
-serverID=null;
-var memr, partr, vtxt;
-vc=null;
-questions = [];
+seServer=null;
+liveVoiceChat=null;
+questions = [], gameTeam={pro:[],con:[]};
 client.on('ready', () => {
   console.log(`Thermometer logged in as ${client.user.tag}!                                                                           
              _____ _               _      _____     _     _                 _             
@@ -45,97 +45,105 @@ client.on('ready', () => {
                                             |___|                                         
   `);
   // SE server: 226539067557412864  collab server: 671632183101751296
-  serverID = client.guilds.cache.get('226539067557412864');
+  seServer = client.guilds.cache.get('226539067557412864');
 
   // Live show participant / veteran / trsuted speaker role
-  spart = serverID.roles.cache.get("750742532048027668");
+  spart = seServer.roles.cache.get("750742532048027668");
   // Live show guest role
-  sguest = serverID.roles.cache.get("486617619466682378");
+  showGuestRole = seServer.roles.cache.get("486617619466682378");
   // Live show host role
-  shost = serverID.roles.cache.get("481956803702161408");
+  showHostRole = seServer.roles.cache.get("481956803702161408");
   // Rec consent role
-  recons = serverID.roles.cache.get("750751134531977377");
+  recordingConsentRole = seServer.roles.cache.get("750751134531977377");
   // Member role
-  mem = serverID.roles.cache.get("481250243380248576");
+  memberRole = seServer.roles.cache.get("481250243380248576");
   // Game role
-  gam = serverID.roles.cache.get("779392133584781353");
+  gameRole = seServer.roles.cache.get("779392133584781353");
   // Spanish temas
-  temas = serverID.channels.cache.get("818878694281838632");
+  temas = seServer.channels.cache.get("818878694281838632");
   
-  vc = serverID.channels.cache.get('481332016307240960');
-  vtxt = serverID.channels.cache.get('481331967699320842');
-  roles_chan = serverID.channels.cache.get('613093421581729818')
-  consent_msg = 'React with :red_circle: to give your consent to getting your audio/video published on our live/recorded events. Go to <#'+roles_chan.id+'> to revoke consent.'
+  // Live show voice chat channel
+  liveVoiceChat = seServer.channels.cache.get('481332016307240960');
+  // Live show text chat channel
+  liveTextChat = seServer.channels.cache.get('481331967699320842');
+  // Mute/unmute voice chat channel
+  muteUnmuteVoiceChat = seServer.channels.cache.get('482385789271932967');
+  roles_chan = seServer.channels.cache.get('613093421581729818')
+  consent_msg = 'React with :red_circle: to give your consent to getting your audio/video \
+    published on our live/recorded events. Go to <#'+roles_chan.id+'> to revoke consent.'
 });
 
 client.on('message', msg => {
+  const firstWord = msg.content.split(' ')[0].toLowerCase();
   // console.log('Claim:',msg.content);
   // fk.push(msg);
-    // if( vip.includes(msg.author.id) && (msg.channel.id === vtxt.id) ){ //(msg.channel.type === "dm") ){
-    if( msg.member && msg.member.roles.cache.has(shost.id) && (msg.channel.id === vtxt.id) ){ //(msg.channel.type === "dm") ){
+    // if( vip.includes(msg.author.id) && (msg.channel.id === liveTextChat.id) ){ //(msg.channel.type === "dm") ){
+    if( msg.member && msg.member.roles.cache.has(showHostRole.id) && (msg.channel.id === liveTextChat.id) ){ //(msg.channel.type === "dm") ){
       // number: set scale.txt and update scale.svg
       if( Number.isInteger(Number(msg.content) ) ){
         console.log('Scale:',msg.content);
         //fs.writeFileSync('scale.txt', "This is a number: "+msg.content ,{encoding:'utf8',flag:'w'});
         fs.writeFileSync('scale.svg', scale.replace(435, ( Number(msg.content)*8.71) ) ,{encoding:'utf8',flag:'w'});
         fs.writeFileSync('scale.txt', msg.content ,{encoding:'utf8',flag:'w'});
-      }// mute/unmute all vc members
-      else if(['mute','m','Mute','M','unmute','Unmute','um','Um'].includes(msg.content.split(' ')[0]) ){
-        if( ['mute','m','Mute','M'].includes(msg.content.split(' ')[0]) ){
+      }// mute/unmute all liveVoiceChat members
+      else if(['mute','m','unmute','um'].includes(firstWord) ){
+        if( ['mute','m'].includes(firstWord) ){
           // console.log('Mute:',msg.content);
           if(has_user_mentions(msg)){
-            vc.members.forEach(vcm => { // console.log('each:',vcm.user.id);
+            liveVoiceChat.members.forEach(vcm => { // console.log('each:',vcm.user.id);
               if( msg.mentions.has(vcm.user.id) )// console.log('mentioned:',vcm.user.id);
-                vcm.voice.setChannel(vc).catch(console.log); 
+                vcm.voice.setChannel(liveVoiceChat).catch(console.log); 
             });
           }
           else{ //mute all
-            vc.members.forEach(vcm => {// console.log('anyeach:',vcm.user.id);
-              vcm.voice.setChannel(vc).catch(console.log); 
+            liveVoiceChat.members.forEach(vcm => {// console.log('anyeach:',vcm.user.id);
+              vcm.voice.setChannel(liveVoiceChat).catch(console.log); 
             });
           }
         }//unmute below
         else{
           console.log('Unmute:',msg.content);
           if(has_user_mentions(msg)){
-            vc.members.forEach(vcm => { // console.log('each:',vcm.user.id);
+            liveVoiceChat.members.forEach(vcm => { // console.log('each:',vcm.user.id);
               if( msg.mentions.has( vcm.user.id ) ) // console.log('mentioned:',vcm.user.id);
                 vcm.voice.setMute(false).catch(console.log);
-              console.log( vcm.roles.cache.has(recons) )
+              console.log( vcm.roles.cache.has(recordingConsentRole) )
             });
           }
           else{ //unmute all
             nocons = [];
-            vc.members.forEach(vcm =>{
-              if(vcm.roles.cache.has(recons.id))
+            liveVoiceChat.members.forEach(vcm =>{
+              if(vcm.roles.cache.has(recordingConsentRole.id))
                 vcm.voice.setMute(false).catch(console.log)
               else{
                 nocons.push(`<@${vcm.id}>`);
               }
             });
             noconsmention = nocons.join(' ');
-            msg.channel.send(`All but the following members were muted:\n${noconsmention}\nFollow instructions bellow to get the role and ask in chat to be unmuted.`);
+            if (nocons.length) {
+              msg.channel.send(`All but the following members were muted:\n${noconsmention}\nFollow instructions bellow to get the role and ask in chat to be unmuted.`);              
+            }
             show_consent(msg.channel);
 
           }// console.log('anyeach:',vcm.user.id);
         }
       }
-      else if(['guest','Guest'].includes(msg.content.split(' ')[0])){
+      else if(['guest'].includes(firstWord)){
         if(has_user_mentions(msg)){
           msg.mentions.members.forEach(user => {
-            user.roles.add(sguest)
-              .then( () => { user.voice.setChannel(vc).catch(console.log) } )
+            user.roles.add(showGuestRole)
+              .then( () => { user.voice.setChannel(liveVoiceChat).catch(console.log) } )
               .catch(console.log);  
           });
           return;
         }
-        fs.writeFileSync('guest.txt', msg.content.substring( msg.content.split(' ')[0].length ) ,{encoding:'utf8',flag:'w'});
+        fs.writeFileSync('guest.txt', msg.content.substring( firstWord.length ) ,{encoding:'utf8',flag:'w'});
       }
-      else if(['unguest','Unguest'].includes(msg.content.split(' ')[0])){
+      else if(['unguest'].includes(firstWord)){
         if(has_user_mentions(msg)){
           msg.mentions.members.forEach(user => {
-            user.roles.remove(sguest)
-              .then( () => { user.voice.setChannel(vc).catch(console.log) } )
+            user.roles.remove(showGuestRole)
+              .then( () => { user.voice.setChannel(liveVoiceChat).catch(console.log) } )
               .catch(console.log); 
           });
         }
@@ -143,9 +151,9 @@ client.on('message', msg => {
       // else if(['game','Game'].includes(msg.content.split(' ')[0])){
       //   if(has_user_mentions(msg)){
       //     msg.mentions.members.forEach(user => {
-      //       user.roles.add(gam)
-      //         .then( () => { user.roles.remove(mem).catch(console.log) } )
-      //         //.then( () => { user.voice.setChannel(vc).catch(console.log) } )
+      //       user.roles.add(gameRole)
+      //         .then( () => { user.roles.remove(memberRole).catch(console.log) } )
+      //         //.then( () => { user.voice.setChannel(liveVoiceChat).catch(console.log) } )
       //         .catch(console.log);  
       //     });
       //     return;
@@ -154,16 +162,16 @@ client.on('message', msg => {
       // else if(['ungame','Ungame'].includes(msg.content.split(' ')[0])){
       //   if(has_user_mentions(msg)){
       //     msg.mentions.members.forEach(user => {
-      //       user.roles.remove(gam)
-      //         .then( () => { user.roles.add(mem).catch(console.log) } )
-      //         //.then( () => { user.voice.setChannel(vc).catch(console.log) } )
+      //       user.roles.remove(gameRole)
+      //         .then( () => { user.roles.add(memberRole).catch(console.log) } )
+      //         //.then( () => { user.voice.setChannel(liveVoiceChat).catch(console.log) } )
       //         .catch(console.log); 
       //     });
       //   }
       // }
-      else if(['unclench','Unclench'].includes(msg.content.split(' ')[0])){
-        sguest.members.forEach(user => {
-          user.roles.remove(sguest).catch(console.log);
+      else if(['unclench'].includes(firstWord)){
+        showGuestRole.members.forEach(user => {
+          user.roles.remove(showGuestRole).catch(console.log);
         });
       }
       else if( ['show consent','Show consent'].includes(msg.content) ){
@@ -226,7 +234,7 @@ client.on('message', msg => {
           });
         }
       }
-      else if(['room','Room'].includes(msg.content.split(' ')[0])){
+      else if(['room'].includes(firstWord)){
         let room8 = msg.content.split(' ')[1]
         let camsize = '';
         if( Number.isInteger(Number( msg.content.split(' ')[2] ) ) ){
@@ -250,24 +258,121 @@ client.on('message', msg => {
       }
       // ninja_link ='&cleanoutput&hideheader&label={somename}';
   
-  // ninja_link_viewer = '&view={value1}&codec={vp8 or vp9 or h264}&videobitrate=1000&audiobitrate=96'
+      // ninja_link_viewer = '&view={value1}&codec={vp8 or vp9 or h264}&videobitrate=1000&audiobitrate=96'
 
-  //https://obs.ninja/?view=CircleTheSquare&label=Near&codec=h264&bitrate=500&cleanoutput
-  //https://obs.ninja/?push=CircleTheSquare&cleanoutput&hideheader&label=CircleTheSquare&webcam&audiodevice=0&autostart&framerate=25&maxvideobitrate=1000&height=1080&width=1080
+      //https://obs.ninja/?view=CircleTheSquare&label=Near&codec=h264&bitrate=500&cleanoutput
+      //https://obs.ninja/?push=CircleTheSquare&cleanoutput&hideheader&label=CircleTheSquare&webcam&audiodevice=0&autostart&framerate=25&maxvideobitrate=1000&height=1080&width=1080
 
+      //game show section
+      else if(['gameshow','gs'].includes(firstWord) ){
+        console.log('gs');
+        let secondWord = msg.content.split(' ')[1].toLowerCase();
+        console.log('secondWord: ',secondWord);
+        
+        if( ['pro', 'con'].includes( secondWord ) ){
+          console.log('color:',secondWord);
+          //mentions of team players
+          if(has_user_mentions(msg)){
+            //each mentioned memder
+            msg.mentions.members.forEach(user => {
+              let isTeam = {
+                'pro' : gameTeam.pro.indexOf(user) !== -1,
+                'con' : gameTeam.con.indexOf(user) !== -1
+              };
+              console.log('isTeam:',isTeam);
+              let newAdd = !isTeam.pro&&!isTeam.con;
+              console.log('newAdd:',newAdd);
+              let diffTeam = !newAdd&&!(isTeam[secondWord] === -1);
+              console.log('diffTeam:',diffTeam);
+              //if neither => add
+              //if current team => remove
+              //if diff team => remove + add
+
+              //remove from team
+              if ( gameTeam.pro.includes(user) || gameTeam.con.includes(user) ) {
+                const index1 = gameTeam.pro.indexOf(user);
+                if (index1 > -1) {
+                  gameTeam.pro.splice(index1, 1);
+                }
+                const index2 = gameTeam.con.indexOf(user);
+                if (index2 > -1) {
+                  gameTeam.con.splice(index2, 1);
+                }
+              }
+              if(newAdd||diffTeam){
+                //add to team
+                gameTeam[secondWord].push(user);
+                console.log('gameTeam[secondWord]:', gameTeam[secondWord]);
+
+                user.roles.add(gameRole)
+                .then( () => {
+                  user.voice.setChannel(liveVoiceChat).catch(console.log)
+                })
+                .catch(console.log);
+              }
+
+            });
+            return;
+          }
+          //no mentions, move non-team members
+          else{
+            let otherTeam = (secondWord=='pro')?'con':'pro';
+            gameTeam[otherTeam].forEach(user => {
+              user.voice.setChannel(muteUnmuteVoiceChat)
+              .catch(console.log);
+            });
+            gameTeam[secondWord].forEach(user => {
+              user.voice.setChannel(liveVoiceChat)
+              .catch(console.log);
+            });
+          }
+        }//unmute below
+        else if(['teams'].includes( secondWord ) ) {
+          console.log('command:',secondWord);
+          let teamProText = '';
+          liveTextChat.send('**🟩 Team Pro:**').catch(console.log);
+            gameTeam.pro.forEach(user => {
+            teamProText += `🟩 ${user.displayName}\n`;
+          });
+          if (teamProText) {
+            liveTextChat.send(teamProText).catch(console.log);
+          }
+          let teamConText = '';
+          liveTextChat.send('**🟥 Team Con:**').catch(console.log);
+          gameTeam.con.forEach(user => {
+            teamConText += `🟥 ${user.displayName}\n`;
+          });
+          if (teamConText) {
+            liveTextChat.send(teamConText).catch(console.log);
+          }
+
+        }//unmute below
+        else if(['stop','reset'].includes( secondWord ) ) {
+          console.log('command:',secondWord);
+          gameRole.members.forEach(user => {
+            user.roles.remove(gameRole).catch(console.log);
+          });
+          [...gameTeam.pro,...gameTeam.con].forEach(user => {
+            user.voice.setChannel(liveVoiceChat)
+            .catch(console.log);
+          });
+          gameTeam.pro = [];
+          gameTeam.con = [];
+        }
+      }
     }
-    if(msg.channel.id === vtxt.id){ //msg.member && msg.member.roles.cache.has(mem.id) &&
+    if(msg.channel.id === liveTextChat.id){ //msg.member && msg.member.roles.cache.has(memberRole.id) &&
       if(msg.content[0] === '-'){
-        msg.react(eapprove)
-        .then(r => {msg.react(ewarn)})
-        .then(r => {msg.react(enot)})
-        .then(r => {msg.react(esave)})
-        // .then(r => {msg.react(enext)}) 
+        msg.react(emojiApprove)
+        .then(r => {msg.react(emojiWarn)})
+        .then(r => {msg.react(emojiNot)})
+        .then(r => {msg.react(emojiSave)})
+        // .then(r => {msg.react(emojiNext)}) 
         .catch(console.log)
       }
     }
   if( msg.channel && msg.channel.parent && msg.channel.parent.id == '482724681367945236' && msg.channel.id != 'FK818878694281838632' ){
-    if(['*temas','*Temas'].includes(msg.content.split(' ')[0])){
+    if(['*temas'].includes(firstWord)){
       temas.messages.fetch({ limit: 100 }).then(messages => {
         let peepIDs = [];
         if(has_user_mentions(msg)){
@@ -300,7 +405,7 @@ client.on('message', msg => {
                 msg.channel.send( temlist );
                 temlist='';
                 fk.push(message.author)
-                temlist+= `**${serverID.member(message.author).displayName }:**\n` ;
+                temlist+= `**${seServer.member(message.author).displayName }:**\n` ;
               }
               temarr.push( ...message.content.split('\n') );
             });
@@ -322,31 +427,31 @@ client.on('message', msg => {
 client.on('messageReactionAdd', (reaction, user) => {
   if (user.bot) return;
   let msg = reaction.message, emoji = reaction.emoji;
-  if( serverID.members.cache.get(user.id).roles.cache.has(shost.id) && (msg.channel.id === vtxt.id) ){
+  if( seServer.members.cache.get(user.id).roles.cache.has(showHostRole.id) && (msg.channel.id === liveTextChat.id) ){
 
-    if (emoji.name == eapprove) {
+    if (emoji.name == emojiApprove) {
       fs.writeFileSync('claim.txt', msg.content.substring(1) ,{encoding:'utf8',flag:'w'});
       // msg.channel.send('Claim: '+ msg.content.substring(1))
     }
-    if (emoji.name == esave) {
+    if (emoji.name == emojiSave) {
       questions.push(msg.content.substring(1));
       reaction.remove();
     }
-    if (emoji.name == enext) {
+    if (emoji.name == emojiNext) {
       suri++;
       next_survey_q(msg);
     }
     console.log('"'+msg.content+'"');
   }
 
-  if (emoji.name == '🔴') {
+  if (emoji.name == emojiRecord) {
     if (msg.content == consent_msg){
-      if ( reaction.message.guild.member(user).roles.cache.has(recons.id)
+      if ( reaction.message.guild.member(user).roles.cache.has(recordingConsentRole.id)
        ) {
         return user.send("You already gave recording consent, you have the role.")
       }
       else{
-        reaction.message.guild.member(user).roles.add(recons)
+        reaction.message.guild.member(user).roles.add(recordingConsentRole)
         .then(msg.channel.send("Consent given by <@"+user.id+">"))
         .catch(console.log);
       }
@@ -383,7 +488,7 @@ function next_survey_q (msg) {
         message.react('3️⃣').catch(console.log)
         message.react('4️⃣').catch(console.log)
         message.react('5️⃣').catch(console.log)
-        message.react(enext).catch(console.log)
+        message.react(emojiNext).catch(console.log)
     }).catch(console.log);
   }
   else{
@@ -395,7 +500,7 @@ function next_survey_q (msg) {
 function show_consent(channel) {
   console.log('show_consent called');
   channel.send(consent_msg)
-  .then(msg => msg.react('🔴'))
+  .then(msg => msg.react(emojiRecord))
 }
 
 var suri = 0;
