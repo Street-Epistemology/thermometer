@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Server stats</title>
+    <style>
+      .claim {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 56px;
+        text-align: center;
+        color: rgb(0, 0, 0);
+      }
+      .outline{
+        filter:url(#stroke-text-svg-filter);
+      }
+      .inframe{
+          position: absolute;
+          top: 0;
+          width: 100%;
+      }
+      .inline{
+          width: 100%;
+          color: #eee;
+      }
+      body{
+          margin: 0;
+          padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <svg version="1.1" xmlns="//www.w3.org/2000/svg" xmlns:xlink="//www.w3.org/1999/xlink" style="display:none;">
+    <defs>
+        <filter id="stroke-text-svg-filter">
+        <feMorphology operator="dilate" radius="4"></feMorphology>
+        <feComposite operator="xor" in="SourceGraphic"/>
+        </filter>
+    </defs>
+    </svg>
+    <p class="claim outline">This is just a placeholder. Nothing to see here.</p>
+    <div class="inframe">
+        <p class="claim inline">This is just a placeholder. Nothing to see here.</p>
+    </div>
+    <script>
+      (function() {
+        const inline = document.querySelector('.inline');
+        const outline = document.querySelector('.outline');
+        const heapUsed = document.getElementById('heapUsed');
+        const external = document.getElementById('external');
+        const ws = new WebSocket('ws://localhost:61856');
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            console.log(data)
+            if (data.claim){
+                inline.textContent = data.claim;
+                outline.textContent = data.claim;
+            }
+        //   heapTotal.textContent = data.heapTotal;
+        //   heapUsed.textContent = data.heapUsed;
+        //   external.textContent = data.external;
+        };
+      })();
+    </script>
+  </body>
+</html>

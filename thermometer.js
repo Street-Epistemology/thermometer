@@ -1,8 +1,12 @@
 fk = [];
 console.log('code is running');
+const fs = require('fs'), http = require('http');
 const Discord = require('discord.js');
+
 client = new Discord.Client();
-const fs = require('fs'), http = require('http'), url = require('url');
+const WebSocket = require('ws');
+thermometerWS = WebSocket;
+thermowss = new thermometerWS.Server({ port: 61856 })
 
 const vip = ["563797322798989330"//FK
   ,"658378708893302784"//Dali
@@ -15,6 +19,21 @@ http.createServer(function (request, response) {
   rs = fs.createReadStream('thermometer.svg').on('error', (e)=>{
   console.log(e.message); response.writeHead(404); response.end()}).pipe(response)
 }).listen(80)
+
+thermowss.on('connection', ws => {
+  // ws.on('message', message => {
+  //   console.log(`Received message => ${message}`)
+  // })
+  ws.send(JSON.stringify({connection:'sucess'}))
+})
+
+function wsup(data) {
+  thermowss.clients.forEach(function each(client) {
+    if (client.readyState === thermometerWS.OPEN) {
+      client.send(JSON.stringify(data))
+    }
+  });
+}
 
 // emojis
 var emojiApprove = '✅', emojiWarn = '⚠️', emojiNot = '🚫', emojiNext = '⏭️'
@@ -431,6 +450,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 
     if (emoji.name == emojiApprove) {
       fs.writeFileSync('claim.txt', msg.content.substring(1) ,{encoding:'utf8',flag:'w'});
+      wsup({claim:msg.content.substring(1)});
       // msg.channel.send('Claim: '+ msg.content.substring(1))
     }
     if (emoji.name == emojiSave) {
