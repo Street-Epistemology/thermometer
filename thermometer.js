@@ -18,7 +18,7 @@ http.createServer(function (request, response) {
   response.writeHead(200)
   rs = fs.createReadStream('ws.html').on('error', (e)=>{
   console.log(e.message); response.writeHead(404); response.end()}).pipe(response)
-}).listen(80)
+}).listen(443)
 
 thermowss.on('connection', ws => {
   // ws.on('message', message => {
