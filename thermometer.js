@@ -6,7 +6,7 @@ const Discord = require('discord.js');
 client = new Discord.Client();
 const WebSocket = require('ws');
 thermometerWS = WebSocket;
-thermowss = new thermometerWS.Server({ port: 80 })
+thermowss = new thermometerWS.Server({ port: 443 })
 
 const vip = ["563797322798989330"//FK
   ,"658378708893302784"//Dali
@@ -18,7 +18,7 @@ http.createServer(function (request, response) {
   response.writeHead(200)
   rs = fs.createReadStream('ws.html').on('error', (e)=>{
   console.log(e.message); response.writeHead(404); response.end()}).pipe(response)
-}).listen(443)
+}).listen(80)
 
 thermowss.on('connection', ws => {
   // ws.on('message', message => {
