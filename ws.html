@@ -47,7 +47,7 @@
         const outline = document.querySelector('.outline');
         const heapUsed = document.getElementById('heapUsed');
         const external = document.getElementById('external');
-        const ws = new WebSocket(`wss://${window.location.hostname}:8333`);
+        const ws = new WebSocket(`ws://${window.location.hostname}:8333`);
 
         ws.onmessage = function(event) {
             const data = JSON.parse(event.data);
