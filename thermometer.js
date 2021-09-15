@@ -13,7 +13,6 @@ const vip = ["563797322798989330"//FK
   ,"726857147773616269"//Shoulder
 ]
 
-// '.'+url.parse(request.url).pathname
 http.createServer(function (request, response) {
   response.writeHead(200)
   rs = fs.createReadStream('ws.html').on('error', (e)=>{
