@@ -9,7 +9,7 @@ To _use_ there commands below means to type them
 
 All commands are case-insensitive (can be either lower or uppercase) for the first letter. This was implemented to accommodate for many smartphones autocapitalising the first letter.
 
-Note: Content between < > is just a placeholder.
+Note: Content between ```< >``` is just a placeholder.
 
 ## Public features
 
